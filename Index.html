@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>THIEN MATH GALAXY</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+    min-height:100vh;
+    font-family:Arial,sans-serif;
+    color:white;
+    overflow-x:hidden;
+    background:
+      radial-gradient(circle at 20% 20%,#4724a8 0,transparent 25%),
+      radial-gradient(circle at 80% 10%,#0059a8 0,transparent 25%),
+      radial-gradient(circle at 50% 90%,#8b146e 0,transparent 30%),
+      #02020c;
+}
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.75;
+    background-image:
+      radial-gradient(white 1px,transparent 1px),
+      radial-gradient(#9eeaff 1px,transparent 1px);
+    background-size:90px 90px,140px 140px;
+    background-position:10px 20px,50px 80px;
+    animation:stars 18s linear infinite;
+}
+
+@keyframes stars{
+    from{transform:translateY(0)}
+    to{transform:translateY(90px)}
+}
+
+.app{
+    position:relative;
+    z-index:2;
+    width:min(940px,94%);
+    margin:25px auto;
+    padding:25px;
+    border:1px solid rgba(150,190,255,.35);
+    border-radius:30px;
+    background:rgba(5,7,28,.78);
+    backdrop-filter:blur(15px);
+    box-shadow:
+      0 0 50px rgba(72,82,255,.35),
+      inset 0 0 40px rgba(130,70,255,.08);
+}
+
+.logo{
+    text-align:center;
+    font-size:34px;
+    font-weight:1000;
+    letter-spacing:4px;
+    background:linear-gradient(90deg,#7df9ff,#a77cff,#ff72e6);
+    -webkit-background-clip:text;
+    color:transparent;
+    text-shadow:0 0 30px rgba(110,170,255,.5);
+}
+
+.subtitle{
+    text-align:center;
+    margin-top:8px;
+    color:#aeb8d8;
+    font-size:13px;
+    letter-spacing:2px;
+}
+
+.panel{
+    margin-top:25px;
+    padding:20px;
+    border-radius:22px;
+    background:rgba(12,16,50,.72);
+    border:1px solid rgba(150,170,255,.2);
+}
+
+.panel h2{
+    text-align:center;
+    margin-bottom:16px;
+    color:#c8d5ff;
+}
+
+.grades{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+}
+
+.grade{
+    padding:14px 5px;
+    border-radius:14px;
+    border:1px solid #354072;
+    background:linear-gradient(145deg,#111936,#080c20);
+    color:#dce5ff;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.grade:hover{
+    transform:translateY(-3px);
+    border-color:#7c8cff;
+    box-shadow:0 0 20px rgba(100,120,255,.4);
+}
+
+.grade.active{
+    background:linear-gradient(135deg,#684cff,#d53bdb);
+    border-color:#b9b3ff;
+    box-shadow:0 0 25px rgba(150,80,255,.6);
+}
+
+.hidden{display:none}
+
+.topbar{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.stat{
+    text-align:center;
+    padding:12px;
+    border-radius:15px;
+    background:#090d24;
+    border:1px solid #252e5b;
+}
+
+.stat small{
+    color:#7783ac;
+    display:block;
+}
+
+.stat b{
+    font-size:20px;
+    color:#8ffaff;
+}
+
+.question{
+    margin-top:20px;
+    padding:30px 20px;
+    min-height:170px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    border-radius:22px;
+    background:
+      radial-gradient(circle,#1d2162,#090b25 65%);
+    border:1px solid #5865c9;
+    box-shadow:0 0 35px rgba(70,90,255,.22);
+}
+
+#questionText{
+    font-size:28px;
+    font-weight:900;
+}
+
+.answerArea{
+    margin-top:18px;
+    display:flex;
+    gap:10px;
+}
+
+#answer{
+    flex:1;
+    padding:16px;
+    border-radius:14px;
+    border:1px solid #46518b;
+    outline:none;
+    background:#050817;
+    color:white;
+    font-size:20px;
+    text-align:center;
+}
+
+button.action{
+    padding:15px 22px;
+    border:0;
+    border-radius:14px;
+    font-weight:900;
+    color:white;
+    cursor:pointer;
+    background:linear-gradient(135deg,#6255ff,#d23bdb);
+    box-shadow:0 0 20px rgba(130,70,255,.35);
+}
+
+button.action:active{
+    transform:scale(.97);
+}
+
+.feedback{
+    min-height:30px;
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+    font-size:16px;
+}
+
+.correct{color:#68ffbd}
+.wrong{color:#ff758c}
+
+.bot{
+    margin-top:18px;
+    padding:15px;
+    border-radius:16px;
+    background:rgba(10,15,40,.8);
+    border:1px solid #29366e;
+    color:#bfcaff;
+}
+
+.bot span{
+    color:#86f7ff;
+    font-weight:bold;
+}
+
+.menuButtons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.menuButtons button{
+    flex:1;
+}
+
+@media(max-width:650px){
+    .grades{grid-template-columns:repeat(3,1fr)}
+    .topbar{grid-template-columns:repeat(2,1fr)}
+    .answerArea{flex-direction:column}
+    #questionText{font-size:22px}
+    .logo{font-size:25px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="logo">🌌 THIEN MATH GALAXY</div>
+<div class="subtitle">HỌC TOÁN • VƯỢT VŨ TRỤ • LÊN CẤP</div>
+
+<div id="gradePanel" class="panel">
+<h2>🚀 CHỌN CẤP ĐỘ</h2>
+
+<div class="grades">
+<button class="grade" onclick="selectGrade(3)">LỚP 3</button>
+<button class="grade" onclick="selectGrade(4)">LỚP 4</button>
+<button class="grade" onclick="selectGrade(5)">LỚP 5</button>
+<button class="grade" onclick="selectGrade(6)">LỚP 6</button>
+<button class="grade" onclick="selectGrade(7)">LỚP 7</button>
+<button class="grade" onclick="selectGrade(8)">LỚP 8</button>
+<button class="grade" onclick="selectGrade(9)">LỚP 9</button>
+<button class="grade" onclick="selectGrade(10)">LỚP 10</button>
+<button class="grade" onclick="selectGrade(11)">LỚP 11</button>
+<button class="grade" onclick="selectGrade(12)">LỚP 12</button>
+</div>
+</div>
+
+<div id="game" class="panel hidden">
+
+<div class="topbar">
+<div class="stat">
+<small>ĐIỂM</small>
+<b id="score">0</b>
+</div>
+
+<div class="stat">
+<small>STREAK</small>
+<b id="streak">0</b>
+</div>
+
+<div class="stat">
+<small>XP</small>
+<b id="xp">0</b>
+</div>
+
+<div class="stat">
+<small>LỚP</small>
+<b id="currentGrade">3</b>
+</div>
+</div>
+
+<div class="bot">
+🤖 <span>THIEN BOT:</span>
+<span id="botText">Đang tạo câu hỏi...</span>
+</div>
+
+<div class="question">
+<div id="questionText">...</div>
+</div>
+
+<div class="answerArea">
+<input id="answer" type="text" inputmode="decimal"
+placeholder="Nhập đáp án...">
+
+<button class="action" onclick="checkAnswer()">
+TRẢ LỜI
+</button>
+</div>
+
+<div id="feedback" class="feedback"></div>
+
+<div class="menuButtons">
+<button class="action" onclick="newQuestion()">🔄 CÂU KHÁC</button>
+<button class="action" onclick="changeGrade()">🌌 ĐỔI LỚP</button>
+</div>
+
+</div>
+</div>
+
+<script>
+
+let grade=3;
+let score=0;
+let streak=0;
+let xp=0;
+let answerValue=0;
+let answered=false;
+
+const $=id=>document.getElementById(id);
+
+function rand(a,b){
+    return Math.floor(Math.random()*(b-a+1))+a;
+}
+
+function pick(arr){
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function cleanNumber(n){
+    return Number.isInteger(n)
+        ? n
+        : Math.round(n*100)/100;
+}
+
+function selectGrade(g){
+
+    grade=g;
+    score=0;
+    streak=0;
+    xp=0;
+
+    document.querySelectorAll(".grade")
+        .forEach(x=>x.classList.remove("active"));
+
+    [...document.querySelectorAll(".grade")]
+        .find(x=>x.textContent.includes(g))
+        ?.classList.add("active");
+
+    $("currentGrade").textContent=g;
+    $("score").textContent=0;
+    $("streak").textContent=0;
+    $("xp").textContent=0;
+
+    $("gradePanel").classList.add("hidden");
+    $("game").classList.remove("hidden");
+
+    newQuestion();
+}
+
+function changeGrade(){
+    $("game").classList.add("hidden");
+    $("gradePanel").classList.remove("hidden");
+}
+
+function makeQuestion(){
+
+    let a,b,c;
+
+    // LỚP 3
+    if(grade===3){
+
+        a=rand(10,99);
+        b=rand(10,99);
+
+        if(Math.random()<.5)
+            return [`${a} + ${b} = ?`,a+b];
+
+        if(a>b)
+            return [`${a} − ${b} = ?`,a-b];
+
+        return [`${b} − ${a} = ?`,b-a];
+    }
+
+    // LỚP 4
+    if(grade===4){
+
+        a=rand(100,999);
+        b=rand(10,99);
+
+        if(Math.random()<.5)
+            return [`${a} × ${b} = ?`,a*b];
+
+        return [`${a} + ${b} = ?`,a+b];
+    }
+
+    // LỚP 5
+    if(grade===5){
+
+        a=rand(10,100);
+        b=rand(2,20);
+
+        if(Math.random()<.5)
+            return [`${a} × ${b} = ?`,a*b];
+
+        return [`${a*b} ÷ ${b} = ?`,a];
+    }
+
+    // LỚP 6
+    if(grade===6){
+
+        a=rand(10,80);
+        b=rand(2,20);
+
+        if(Math.random()<.5)
+            return [`${a}² + ${b}² = ?`,a*a+b*b];
+
+        return [`${a} × ${b} − ${b} = ?`,a*b-b];
+    }
+
+    // LỚP 7
+    if(grade===7){
+
+        a=rand(2,20);
+        b=rand(2,20);
+
+        if(Math.random()<.5)
+            return [`${a}x + ${b} = ${a*rand(3,10)+b}`,
+                rand(3,10)];
+
+        return [`${a}² − ${b}² = ?`,a*a-b*b];
+    }
+
+    // LỚP 8
+    if(grade===8){
+
+        a=rand(2,15);
+        b=rand(2,15);
+
+        if(Math.random()<.5)
+            return [
+                `Giải x: ${a}x − ${b} = ${a*rand(4,12)-b}`,
+                rand(4,12)
+            ];
+
+        return [`(${a} + ${b})² = ?`,(a+b)**2];
+    }
+
+    // LỚP 9
+    if(grade===9){
+
+        a=rand(2,12);
+
+        if(Math.random()<.5){
+            let x=rand(2,12);
+            let b=-(2*x);
+            let c=x*x;
+
+            return [
+                `Giải x: x² ${b>=0?"+ "+b:b+" "}x + ${c} = 0`,
+                x
+            ];
+        }
+
+        return [
+            `√${a*a} + ${a} = ?`,
+            a+a
+        ];
+    }
+
+    // LỚP 10
+    if(grade===10){
+
+        a=rand(2,12);
+        b=rand(2,12);
+
+        if(Math.random()<.5)
+            return [`f(x)=x². f(${a}) = ?`,a*a];
+
+        return [`|${a} − ${b}| = ?`,Math.abs(a-b)];
+    }
+
+    // LỚP 11
+    if(grade===11){
+
+        a=rand(2,10);
+        b=rand(2,10);
+
+        if(Math.random()<.5)
+            return [`${a}² + ${b}² = ?`,a*a+b*b];
+
+        return [`2 × ${a}³ = ?`,2*a**3];
+    }
+
+    // LỚP 12
+    if(grade===12){
+
+        a=rand(2,10);
+
+        if(Math.random()<.5)
+            return [
+                `Đạo hàm của x² tại x=${a} là ?`,
+                2*a
+            ];
+
+        return [
+            `∫ 2x dx từ 0 đến ${a} = ?`,
+            a*a
+        ];
+    }
+}
+
+function newQuestion(){
+
+    answered=false;
+
+    $("feedback").textContent="";
+    $("feedback").className="feedback";
+    $("answer").value="";
+    $("answer").focus();
+
+    let q=makeQuestion();
+
+    $("questionText").textContent=q[0];
+
+    answerValue=q[1];
+
+    const messages=[
+        "Câu hỏi mới đã xuất hiện trong thiên hà 🚀",
+        "Tập trung nào phi hành gia 🧑‍🚀",
+        "Bạn có thể phá đảo câu này!",
+        "THIEN BOT đang chờ câu trả lời...",
+        "Não chuẩn bị tăng tốc ⚡"
+    ];
+
+    $("botText").textContent=pick(messages);
+}
+
+function checkAnswer(){
+
+    if(answered)return;
+
+    let value=parseFloat(
+        $("answer").value.replace(",",".")
+    );
+
+    if(Number.isNaN(value)){
+        $("feedback").textContent="⚠️ Hãy nhập đáp án!";
+        $("feedback").className="feedback wrong";
+        return;
+    }
+
+    answered=true;
+
+    if(Math.abs(value-answerValue)<0.01){
+
+        streak++;
+
+        let points=10+(streak*2);
+
+        score+=points;
+        xp+=points;
+
+        $("score").textContent=score;
+        $("streak").textContent=streak;
+        $("xp").textContent=xp;
+
+        $("feedback").textContent=
+            `✨ CHÍNH XÁC! +${points} điểm • Streak ${streak}`;
+
+        $("feedback").className="feedback correct";
+
+        $("botText").textContent=
+            "Quá đỉnh! Bạn vừa vượt qua một hành tinh toán học 🌟";
+
+    }else{
+
+        streak=0;
+
+        $("streak").textContent=0;
+
+        $("feedback").textContent=
+            `❌ Chưa đúng. Đáp án: ${answerValue}`;
+
+        $("feedback").className="feedback wrong";
+
+        $("botText").textContent=
+            "Không sao! Thử câu tiếp theo nhé 🚀";
+    }
+}
+
+$("answer").addEventListener("keydown",e=>{
+    if(e.key==="Enter")checkAnswer();
+});
+
+</script>
+
+</body>
+  </html>
